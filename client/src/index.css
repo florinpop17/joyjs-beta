@@ -1,0 +1,59 @@
+.login-form {
+    background-color: #fafafa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 15%;
+}
+
+.messages-container {
+    background-color: #fafafa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    height: calc(100vh - 150px);
+    /*display: flex;
+    flex-direction: column;
+    justify-content: flex-end;*/
+    overflow-y: auto;
+}
+
+.message-box {
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.message-box-question{
+    background-color: #eeeeee;
+}
+
+.message-box-info{
+    background-color: #46b8da;
+}
+
+.user-logo {
+    border-radius: 50%;
+    max-width: 70%;
+}
+
+.message {
+    position: relative;
+}
+
+.message h4 {
+    font-weight: 600;
+    margin-top: 0;
+}
+
+.message p {
+    margin-bottom: 0;
+}
+
+.message small{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+form {
+    padding: 10px;
+}
