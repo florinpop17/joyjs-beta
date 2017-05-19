@@ -58,11 +58,22 @@ class App extends Component {
             this.setState({
                 socket
             })
+
+            socket.on('disconnect', () => {
+                // server stopped, set socket to undefined to send user back to login menu
+                this.setState({
+                    socket: undefined
+                })
+            })
         }
     }
 
     componentDidUpdate() {
-        this.scrollBottom();
+        // only scrollBottom when socket is available => user is logged in
+        const { socket } = this.state;
+        if(socket){
+            this.scrollBottom();
+        }
     }
 
     render() {

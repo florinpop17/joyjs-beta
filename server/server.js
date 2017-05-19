@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
 let users = [];
 let messages = [];
 let currentQuestion;
-let roundTime = 60000; // 60 seconds / game
+let roundTime = 10000; // 60 seconds / game
 let answeredCorrectly = false;
 
 let getRandomQuestion = () => {
@@ -90,8 +90,10 @@ io.on('connection', (socket) => {
 
                     // restart game
                     clearInterval(gameInterval);
-                    gameInterval = setInterval(game, roundTime);
-                    setTimeout(game, 15000);
+                    setTimeout(() => {
+                        game();
+                        gameInterval = setInterval(game, roundTime);
+                    }, 15000);
 
                 }
             }
@@ -115,6 +117,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        console.log(`User ${socket.username} disconnected.`);
         users.splice(users.indexOf(users.find(user => user.id === socket.id)), 1);
     })
 });
