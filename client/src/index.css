@@ -30,6 +30,10 @@
     background-color: #46b8da;
 }
 
+.message-box-error{
+    background-color: #b67102;
+}
+
 .user-logo {
     border-radius: 50%;
     max-width: 70%;

@@ -78,23 +78,32 @@ io.on('connection', (socket) => {
                 message = message.slice(4).trim();
 
                 // check if the message has the correct answer and it was not answeredCorrectly yet
-                if(!answeredCorrectly && currentQuestion && message === currentQuestion.correct){
-                    newMessage = {
-                        text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
-                        author: "The server",
-                        time: new Date().toLocaleTimeString(),
-                        type: "info"
+                if(!answeredCorrectly && currentQuestion){
+                    if(message === currentQuestion.correct){
+                        newMessage = {
+                            text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
+                            author: "Joy ^_^",
+                            time: new Date().toLocaleTimeString(),
+                            type: "info"
+                        }
+
+                        answeredCorrectly = true;
+
+                        // restart game
+                        clearInterval(gameInterval);
+                        setTimeout(() => {
+                            game();
+                            gameInterval = setInterval(game, roundTime);
+                        }, 15000);
+                    } else { // the answer wasn't correct
+                        // send back to the user that he answered incorrectly
+                        newMessage = {
+                            text: `I'm sorry <strong>${socket.username}</strong>. You have entered a wrong answer.`,
+                            author: "Joy ^_^",
+                            time: new Date().toLocaleTimeString(),
+                            type: "error"
+                        }
                     }
-
-                    answeredCorrectly = true;
-
-                    // restart game
-                    clearInterval(gameInterval);
-                    setTimeout(() => {
-                        game();
-                        gameInterval = setInterval(game, roundTime);
-                    }, 15000);
-
                 }
             }
 

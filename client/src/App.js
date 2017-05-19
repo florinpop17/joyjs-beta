@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Message from './components/Message';
 import Question from './components/Question';
 import Info from './components/Info';
+import Error from './components/Error';
 
 class App extends Component {
     constructor() {
@@ -91,7 +92,7 @@ class App extends Component {
                             <button className="btn btn-primary btn-block">Enter</button>
                         </form>
                     ) : messages ? (
-                        <div className="messages-container" id="always-on-bottom">
+                        <div className="messages-container container" id="always-on-bottom">
                             { messages.map((message, idx) => {
                                 if(message.type === 'message'){
                                     return <Message message={message} key={idx} />;
@@ -101,6 +102,9 @@ class App extends Component {
                                 }
                                 if(message.type === 'info'){
                                     return <Info message={message} key={idx} />;
+                                }
+                                if(message.type === 'error'){
+                                    return <Error message={message} key={idx} />;
                                 }
                                 return '';
                             }) }
