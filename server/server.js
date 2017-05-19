@@ -2,13 +2,21 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const questions = require('./questions');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
+const questions = require('./questions');
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => { console.log(`Server running on port ${PORT}`); });
+// database
+mongoose.connect('http://locahost:')
+mongoose.Promise = global.Promise;
+const db = mongoose.connect('mongodb://localhost/joyjs');
 
+// Middlewares
 app.use(express.static(__dirname + '/../client/build'))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/../client/build/index.html');
@@ -17,7 +25,7 @@ app.get('/', function (req, res) {
 let users = [];
 let messages = [];
 let currentQuestion;
-let roundTime = 10000; // 60 seconds / game
+let roundTime = 60000; // 60 seconds / game
 let answeredCorrectly = false;
 
 let getRandomQuestion = () => {
@@ -130,3 +138,5 @@ io.on('connection', (socket) => {
         users.splice(users.indexOf(users.find(user => user.id === socket.id)), 1);
     })
 });
+
+server.listen(PORT, () => { console.log(`Server running on port ${PORT}`); });
