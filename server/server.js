@@ -63,23 +63,38 @@ io.on('connection', (socket) => {
 
     // when new message comes, save it and emit all the other messages
     socket.on('new message', (message) => {
-        let newMessage;
+        let newMessage = undefined;
 
-        // check if the message has the correct answer and it was not answeredCorrectly yet
-        if(!answeredCorrectly && currentQuestion && message === currentQuestion.correct){
-            newMessage = {
-                text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
-                author: "The server",
-                time: new Date().toLocaleTimeString(),
-                type: "info"
+        // trim message
+        message = message.trim();
+
+        // check if it is a slash command
+        // slash commands start with `/`
+        if(message[0] === '/') {
+
+            // check if the slash is `/ans`
+            if(message.slice(0, 4) === '/ans'){
+                // remove /ans from the message and trim to remove spaces
+                message = message.slice(4).trim();
+
+                // check if the message has the correct answer and it was not answeredCorrectly yet
+                if(!answeredCorrectly && currentQuestion && message === currentQuestion.correct){
+                    newMessage = {
+                        text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
+                        author: "The server",
+                        time: new Date().toLocaleTimeString(),
+                        type: "info"
+                    }
+
+                    answeredCorrectly = true;
+
+                    // restart game
+                    clearInterval(gameInterval);
+                    gameInterval = setInterval(game, roundTime);
+                    setTimeout(game, 15000);
+
+                }
             }
-
-            answeredCorrectly = true;
-
-            // restart game
-            clearInterval(gameInterval);
-            gameInterval = setInterval(game, roundTime);
-            setTimeout(game, 15000);
 
         } else {
             newMessage = {
@@ -90,9 +105,13 @@ io.on('connection', (socket) => {
             }
         }
 
-        messages.push(newMessage);
+        // check to see if the newMessage has value
+        // if doesn't don't emit anything
+        if(newMessage){
+            messages.push(newMessage);
 
-        io.emit('messages', messages);
+            io.emit('messages', messages);
+        }
     });
 
     socket.on('disconnect', () => {
