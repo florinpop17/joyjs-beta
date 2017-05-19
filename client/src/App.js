@@ -94,6 +94,10 @@ class App extends Component {
                     ) : messages ? (
                         <div className="messages-container container" id="always-on-bottom">
                             { messages.map((message, idx) => {
+
+                                // convert time to local string
+                                message.time = new Date(message.time).toLocaleTimeString();
+
                                 if(message.type === 'message'){
                                     return <Message message={message} key={idx} />;
                                 }

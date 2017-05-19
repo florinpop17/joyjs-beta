@@ -5,13 +5,14 @@ const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const config = require('./config');
 const questions = require('./questions');
 const PORT = process.env.PORT || 3000;
 
 // database
 mongoose.connect('http://locahost:')
 mongoose.Promise = global.Promise;
-const db = mongoose.connect('mongodb://localhost/joyjs');
+const db = mongoose.connect(config.MONGO_URL);
 
 // Middlewares
 app.use(express.static(__dirname + '/../client/build'))
@@ -25,7 +26,6 @@ app.get('/', function (req, res) {
 let users = [];
 let messages = [];
 let currentQuestion;
-let roundTime = 60000; // 60 seconds / game
 let answeredCorrectly = false;
 
 let getRandomQuestion = () => {
@@ -42,7 +42,7 @@ let game = () => {
     let questionMessage = {
         text,
         author: 'Question',
-        time: new Date().toLocaleTimeString(),
+        time: new Date(),
         type: 'question'
     }
 
@@ -54,7 +54,7 @@ let game = () => {
 }
 
 // send message every 60 seconds
-let gameInterval = setInterval(game, roundTime);
+let gameInterval = setInterval(game, config.roundTime);
 
 // start game
 game();
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
                         newMessage = {
                             text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
                             author: "Joy ^_^",
-                            time: new Date().toLocaleTimeString(),
+                            time: new Date(),
                             type: "info"
                         }
 
@@ -101,14 +101,14 @@ io.on('connection', (socket) => {
                         clearInterval(gameInterval);
                         setTimeout(() => {
                             game();
-                            gameInterval = setInterval(game, roundTime);
-                        }, 15000);
+                            gameInterval = setInterval(game, config.roundTime);
+                        }, config.breakTime);
                     } else { // the answer wasn't correct
                         // send back to the user that he answered incorrectly
                         newMessage = {
                             text: `I'm sorry <strong>${socket.username}</strong>. You have entered a wrong answer.`,
                             author: "Joy ^_^",
-                            time: new Date().toLocaleTimeString(),
+                            time: new Date(),
                             type: "error"
                         }
                     }
@@ -119,7 +119,7 @@ io.on('connection', (socket) => {
             newMessage = {
                 text: message,
                 author: socket.username,
-                time: new Date().toLocaleTimeString(),
+                time: new Date(),
                 type: "message"
             }
         }
