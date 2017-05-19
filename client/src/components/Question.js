@@ -5,8 +5,6 @@ class Question extends Component {
     render() {
         const { message } = this.props;
 
-        console.log(message.text);
-
         return (
             <div className="message-box message-box-question row">
                 <div className="col-sm-12 message">

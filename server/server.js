@@ -17,6 +17,8 @@ app.get('/', function (req, res) {
 let users = [];
 let messages = [];
 let currentQuestion;
+let roundTime = 60000; // 60 seconds / game
+let answeredCorrectly = false;
 
 let getRandomQuestion = () => {
     let random = Math.floor(Math.random() * questions.length);
@@ -24,6 +26,7 @@ let getRandomQuestion = () => {
 }
 
 let game = () => {
+    answeredCorrectly = false;
     let randomQuestion = getRandomQuestion();
     let { text, correct } = randomQuestion;
 
@@ -43,7 +46,7 @@ let game = () => {
 }
 
 // send message every 60 seconds
-let qInterval = setInterval(game, 60000);
+let gameInterval = setInterval(game, roundTime);
 
 // start game
 game();
@@ -62,14 +65,22 @@ io.on('connection', (socket) => {
     socket.on('new message', (message) => {
         let newMessage;
 
-        // check if the message has the correct answer
-        if(currentQuestion && message === currentQuestion.correct){
+        // check if the message has the correct answer and it was not answeredCorrectly yet
+        if(!answeredCorrectly && currentQuestion && message === currentQuestion.correct){
             newMessage = {
-                text: `<strong>${socket.username}</strong> answered correctly!`,
+                text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
                 author: "The server",
                 time: new Date().toLocaleTimeString(),
                 type: "info"
             }
+
+            answeredCorrectly = true;
+
+            // restart game
+            clearInterval(gameInterval);
+            gameInterval = setInterval(game, roundTime);
+            setTimeout(game, 15000);
+
         } else {
             newMessage = {
                 text: message,
@@ -86,6 +97,5 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         users.splice(users.indexOf(users.find(user => user.id === socket.id)), 1);
-        console.log(users.map(user => user.id));
     })
 });

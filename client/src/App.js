@@ -43,7 +43,7 @@ class App extends Component {
         e.preventDefault();
         let username = this.refs.username.value;
         if(username) {
-            let socket = window.io.connect('http://florin-pop.me/');
+            let socket = window.io.connect('http://localhost:3000/');
             socket.username = username;
 
             socket.emit('username', username);
