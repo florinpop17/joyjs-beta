@@ -13,7 +13,7 @@ class Message extends Component {
                 <div className="col-sm-11 message">
                     <h4>{ message.author }</h4>
                     <p>{ message.text }</p>
-                    <small>{ message.time }</small>
+                    <h6>{ message.time }</h6>
                 </div>
             </div>
         )

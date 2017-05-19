@@ -8,9 +8,9 @@ class Question extends Component {
         return (
             <div className="message-box message-box-question row">
                 <div className="col-sm-12 message">
-                    <h4>{ message.author }</h4>
+                    <h4>{ message.author } <small>Created by: <strong> { message.creator } </strong></small></h4>
                     <p dangerouslySetInnerHTML={ { __html: message.text } } />
-                    <small>{ message.time }</small>
+                    <h6>{ message.time }</h6>
                 </div>
             </div>
         )

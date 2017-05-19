@@ -10,7 +10,7 @@ class Error extends Component {
                 <div className="col-sm-12 message">
                     <h4 dangerouslySetInnerHTML={ { __html: message.author } } />
                     <p dangerouslySetInnerHTML={ { __html: message.text } } />
-                    <small>{ message.time }</small>
+                    <h6>{ message.time }</h6>
                 </div>
             </div>
         )

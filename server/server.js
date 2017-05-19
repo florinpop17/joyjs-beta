@@ -26,6 +26,9 @@ let answeredCorrectly = false;
 // save question from database;
 Question.find((err, allQuestions) => {
     questions = allQuestions;
+
+    // start game once there are questions
+    game();
 });
 
 // Get random question from database
@@ -72,9 +75,6 @@ let game = () => {
 
 // send message every 60 seconds
 let gameInterval = setInterval(game, config.roundTime);
-
-// start game
-game();
 
 io.on('connection', (socket) => {
     // when user connects, emit the messages

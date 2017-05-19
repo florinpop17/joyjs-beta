@@ -104,8 +104,8 @@ class App extends Component {
                             { users ? (
                                 <div className="users-container">
                                     <h5>Active users:</h5>
-                                    { users.map(user => (
-                                        <span>{ user }</span>
+                                    { users.map((user, idx) => (
+                                        <span key={idx}>{ user }</span>
                                     ))}
                                 </div>
                             ) : '' }

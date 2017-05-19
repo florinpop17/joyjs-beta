@@ -29,15 +29,15 @@
     border-bottom: 1px solid #ddd;
 }
 
-.message-box-question{
+.message-box-question {
     background-color: #eeeeee;
 }
 
-.message-box-info{
+.message-box-info {
     background-color: #46b8da;
 }
 
-.message-box-error{
+.message-box-error {
     background-color: #b67102;
 }
 
@@ -59,10 +59,11 @@
     margin-bottom: 0;
 }
 
-.message small{
+.message h6{
     position: absolute;
     top: 0;
     right: 0;
+    margin: 0;
 }
 
 form {
