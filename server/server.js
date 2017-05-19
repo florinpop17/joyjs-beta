@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const config = require('./config');
-const questions = require('./questions');
 const PORT = process.env.PORT || 3000;
 
 // database
@@ -14,43 +13,61 @@ mongoose.connect('http://locahost:')
 mongoose.Promise = global.Promise;
 const db = mongoose.connect(config.MONGO_URL);
 
+// Models
+const Question = require('./models/questionModel.js');
+
+// variables
+let users = [];
+let messages = [];
+let questions = [];
+let currentQuestion;
+let answeredCorrectly = false;
+
+// save question from database;
+Question.find((err, allQuestions) => {
+    questions = allQuestions;
+});
+
+// Get random question from database
+let getRandomQuestion = () => {
+    return questions[Math.floor(Math.random() * questions.length)];
+}
+
 // Middlewares
 app.use(express.static(__dirname + '/../client/build'))
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Routes
+const questionRouter = require('./routes/questionRouter')(Question);
+app.use('/api/questions', questionRouter);
+
+
 app.get('/', function (req, res) {
     res.sendfile(__dirname + '/../client/build/index.html');
 });
 
-let users = [];
-let messages = [];
-let currentQuestion;
-let answeredCorrectly = false;
-
-let getRandomQuestion = () => {
-    let random = Math.floor(Math.random() * questions.length);
-    return { text: questions[random].text, correct: questions[random].correct };
-}
-
 let game = () => {
-    answeredCorrectly = false;
-    let randomQuestion = getRandomQuestion();
-    let { text, correct } = randomQuestion;
 
-    // create question type message
-    let questionMessage = {
-        text,
-        author: 'Question',
-        time: new Date(),
-        type: 'question'
+    currentQuestion = getRandomQuestion();
+    if(currentQuestion){
+        answeredCorrectly = false;
+
+        let { text, creator } = currentQuestion;
+
+        // create question type message
+        let questionMessage = {
+            text,
+            author: 'Question',
+            time: new Date(),
+            type: 'question',
+            creator
+        }
+
+        messages.push(questionMessage);
+
+        io.emit('messages', messages);
     }
-
-    currentQuestion = randomQuestion;
-
-    messages.push(questionMessage);
-
-    io.emit('messages', messages);
 }
 
 // send message every 60 seconds
@@ -87,6 +104,7 @@ io.on('connection', (socket) => {
 
                 // check if the message has the correct answer and it was not answeredCorrectly yet
                 if(!answeredCorrectly && currentQuestion){
+                    
                     if(message === currentQuestion.correct){
                         newMessage = {
                             text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
