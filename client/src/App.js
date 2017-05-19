@@ -10,6 +10,7 @@ class App extends Component {
         super();
 
         this.state = {
+            users: [],
             messages: [],
             socket: undefined
         }
@@ -56,6 +57,13 @@ class App extends Component {
                 });
             });
 
+            socket.on('users', (users) => {
+
+                this.setState({
+                    users
+                })
+            })
+
             this.setState({
                 socket
             })
@@ -78,7 +86,7 @@ class App extends Component {
     }
 
     render() {
-        const { socket, messages } = this.state;
+        const { socket, messages, users } = this.state;
 
         return (
             <div className="container">
@@ -92,31 +100,42 @@ class App extends Component {
                             <button className="btn btn-primary btn-block">Enter</button>
                         </form>
                     ) : messages ? (
-                        <div className="messages-container container" id="always-on-bottom">
-                            { messages.map((message, idx) => {
+                        <div className="chat-container">
+                            { users ? (
+                                <div className="users-container">
+                                    <h5>Active users:</h5>
+                                    { users.map(user => (
+                                        <span>{ user }</span>
+                                    ))}
+                                </div>
+                            ) : '' }
 
-                                // convert time to local string
-                                message.time = new Date(message.time).toLocaleTimeString();
+                            <div className="messages-container container" id="always-on-bottom">
+                                { messages.map((message, idx) => {
 
-                                if(message.type === 'message'){
-                                    return <Message message={message} key={idx} />;
-                                }
-                                if(message.type === 'question'){
-                                    return <Question message={message} key={idx} />;
-                                }
-                                if(message.type === 'info'){
-                                    return <Info message={message} key={idx} />;
-                                }
-                                if(message.type === 'error'){
-                                    return <Error message={message} key={idx} />;
-                                }
-                                return '';
-                            }) }
-                            <div className="row">
-                                <div className="col-sm-12">
-                                    <form onSubmit={this.addMessageHandler}>
-                                        <input ref="message" type="text" className="form-control" placeholder="Insert your message" required/>
-                                    </form>
+                                    // convert time to local string
+                                    message.time = new Date(message.time).toLocaleTimeString();
+
+                                    if(message.type === 'message'){
+                                        return <Message message={message} key={idx} />;
+                                    }
+                                    if(message.type === 'question'){
+                                        return <Question message={message} key={idx} />;
+                                    }
+                                    if(message.type === 'info'){
+                                        return <Info message={message} key={idx} />;
+                                    }
+                                    if(message.type === 'error'){
+                                        return <Error message={message} key={idx} />;
+                                    }
+                                    return '';
+                                }) }
+                                <div className="row">
+                                    <div className="col-sm-12">
+                                        <form onSubmit={this.addMessageHandler}>
+                                            <input ref="message" type="text" className="form-control" placeholder="Insert your message" required/>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

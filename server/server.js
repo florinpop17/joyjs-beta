@@ -84,6 +84,10 @@ io.on('connection', (socket) => {
     socket.on('username', (username) => {
         socket.username = username;
         users.push(socket);
+
+        // send all active users to frontend
+        // but only their username
+        io.emit('users', users.map(user => user.username));
     })
 
     // when new message comes, save it and emit all the other messages
@@ -104,7 +108,7 @@ io.on('connection', (socket) => {
 
                 // check if the message has the correct answer and it was not answeredCorrectly yet
                 if(!answeredCorrectly && currentQuestion){
-                    
+
                     if(message === currentQuestion.correct){
                         newMessage = {
                             text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
@@ -154,6 +158,10 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log(`User ${socket.username} disconnected.`);
         users.splice(users.indexOf(users.find(user => user.id === socket.id)), 1);
+
+        // send all active users to frontend
+        // but only their username
+        io.emit('users', users.map(user => user.username));
     })
 });
 

@@ -6,14 +6,21 @@
     margin-top: 15%;
 }
 
+.users-container h5 {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.users-container span:not(:last-of-type):after {
+    content: ',';
+    margin-right: 5px;
+}
+
 .messages-container {
     background-color: #fafafa;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     border-radius: 5px;
     height: calc(100vh - 150px);
-    /*display: flex;
-    flex-direction: column;
-    justify-content: flex-end;*/
     overflow-y: auto;
 }
 
