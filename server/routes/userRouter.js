@@ -3,6 +3,12 @@ const userRouter = express.Router();
 
 module.exports = (User) => {
     userRouter.route('/')
+        .get((req, res) => {
+            User.find((err, users) => {
+                if (err) return res.json({ success: false, message: err });
+                return res.json({ success: true, users });
+            });
+        })
         .post((req, res) => {
             const { email, username, password } = req.body;
 
