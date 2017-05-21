@@ -15,6 +15,7 @@ const db = mongoose.connect(config.MONGO_URL);
 
 // Models
 const Question = require('./models/questionModel.js');
+const User = require('./models/userModel.js');
 
 // variables
 let users = [];
@@ -43,7 +44,10 @@ app.use(bodyParser.json());
 
 // Routes
 const questionRouter = require('./routes/questionRouter')(Question);
+const userRouter = require('./routes/userRouter')(User);
+
 app.use('/api/questions', questionRouter);
+app.use('/api/users', userRouter);
 
 
 app.get('/', function (req, res) {
