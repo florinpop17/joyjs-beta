@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import Message from './components/Message';
-import Question from './components/Question';
-import Info from './components/Info';
-import Error from './components/Error';
+import Message from './components/messages/Message';
+import Question from './components/messages/Question';
+import Info from './components/messages/Info';
+import Error from './components/messages/Error';
 
 class App extends Component {
     constructor() {
