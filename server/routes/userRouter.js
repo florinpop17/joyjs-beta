@@ -14,14 +14,16 @@ module.exports = (User) => {
 
             User.create({ email, username, password }, (err, user) => {
                 if (err) return res.json({ success: false, message: err });
-                return res.json({ success: true, message: 'User was created successfully!', question user
+                return res.json({ success: true, message: 'User was created successfully!', user });
             });
         });
 
     userRouter.route('/:id')
         .get((req, res) => {
-            User.find({ _id: id }, (err, user) => {
-                if (err) return res.json({ succes: false, message: err });
+            const { id } = req.params;
+
+            User.findOne({ _id: id }, (err, user) => {
+                if (err) return res.json({ success: false, message: 'Cannot find user.' });
                 return res.json({ success: true, user });
             })
         })
