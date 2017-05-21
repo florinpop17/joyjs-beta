@@ -1,32 +1,67 @@
 const express = require('express');
 const userRouter = express.Router();
 
-module.exports = (User) => {
-    userRouter.route('/')
-        .get((req, res) => {
-            User.find((err, users) => {
-                if (err) return res.json({ success: false, message: err });
-                return res.json({ success: true, users });
-            });
-        })
-        .post((req, res) => {
-            const { email, username, password } = req.body;
+const User = require('../models/userModel');
 
-            User.create({ email, username, password }, (err, user) => {
-                if (err) return res.json({ success: false, message: err });
-                return res.json({ success: true, message: 'User was created successfully!', user });
-            });
-        });
+userRouter.route('/')
+	.get((req, res) => {
+		User.find({}, (err, users) => {
+			if (err) return res.json({ success: false, message: err });
+			return res.json({ success: true, users });
+		});
+	})
+	.post((req, res) => {
+		const { email, username, password } = req.body;
 
-    userRouter.route('/:id')
-        .get((req, res) => {
-            const { id } = req.params;
+		User.create({ email, username, password }, (err, user) => {
+			if (err) return res.json({ success: false, message: err });
+			return res.json({ success: true, user });
+		});
+	});
 
-            User.findOne({ _id: id }, (err, user) => {
-                if (err) return res.json({ success: false, message: 'Cannot find user.' });
-                return res.json({ success: true, user });
-            })
-        })
+userRouter.route('/get_user/:id')
+	.get((req, res) => {
+		const { id } = req.params;
 
-    return userRouter;
-}
+		User.findById(id, (err, user) => {
+			if (err) return res.json({ success: false, message: err });
+			return res.json({ success: true, user });
+		});
+	})
+	.patch((req, res) => {
+		const { id } = req.params;
+		const { email, username, password } = req.body;
+
+		let updatedUser = {};
+
+		if(email) updatedUser.email = email;
+		if(username) updatedUser.username = username;
+		if(password) updatedUser.password = password;
+
+		User.findByIdAndUpdate(id, updatedUser, (err, user) => {
+			if (err) return res.json({ success: false, message: err });
+			return res.json({ success: true, user });
+		});
+	})
+	.delete((req, res) => {
+		const { id } = req.params;
+
+		User.findByIdAndRemove(id, (err, user) => {
+			if (err) return res.json({ success: false, message: err });
+			return res.json({ success: true, user });
+		});
+	})
+
+userRouter.route('/leaderboard/')
+	.get((req, res) => {
+		User.find({})
+			.sort('-points')
+			.limit(10)
+			.select('username points')
+			.exec((err, users) => {
+				if (err) return res.json({ success: false, message: err });
+				return res.json({ success:true, leaderboard: users });
+			});
+	});
+
+module.exports = userRouter;

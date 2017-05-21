@@ -2,10 +2,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const QuestionSchema = new Schema({
-    date_created: { type: Date, default: Date.now },
-    text: { type: String, required: true },
-    correct: { type: String, required: true },
-    creator: { type: String, default: "Joy ^_^" }
+	author: {
+		type: String,
+		default: "Joy ^_^"
+	},
+	text: {
+		type: String,
+		required: true
+	},
+	correct_answer: {
+		type: String,
+		required: true
+	},
+	created: {
+		type: Date,
+		default: new Date
+	}
 });
 
 module.exports = mongoose.model('Question', QuestionSchema);

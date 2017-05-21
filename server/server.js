@@ -1,172 +1,36 @@
 const express = require('express');
 const app = express();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const path = require('path');
 
-const config = require('./config');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.port || 3000;
+const userRouter = require('./routes/userRouter');
+const questionRouter = require('./routes/questionRouter');
 
-// database
-mongoose.connect('http://locahost:')
+// connect to database
 mongoose.Promise = global.Promise;
-const db = mongoose.connect(config.MONGO_URL);
+mongoose.connect("mongodb://localhost/joyjs");
 
-// Models
-const Question = require('./models/questionModel.js');
-const User = require('./models/userModel.js');
-
-// variables
-let users = [];
-let messages = [];
-let questions = [];
-let currentQuestion;
-let answeredCorrectly = false;
-
-// save question from database;
-Question.find((err, allQuestions) => {
-    questions = allQuestions;
-
-    // start game once there are questions
-    game();
-});
-
-// Get random question from database
-let getRandomQuestion = () => {
-    return questions[Math.floor(Math.random() * questions.length)];
-}
-
-// Middlewares
-app.use(express.static(__dirname + '/../client/build'))
+// middleware
+app.use(express.static(path.join(__dirname, '../client/build/')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+    next();
+})
 
-// Routes
-const questionRouter = require('./routes/questionRouter')(Question);
-const userRouter = require('./routes/userRouter')(User);
-
-app.use('/api/questions', questionRouter);
+// routers
 app.use('/api/users', userRouter);
+app.use('/api/questions', questionRouter);
 
-
-app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/../client/build/index.html');
+// default route
+app.get("/", (req, res) => {
+    // send static files
+    res.send(path.join(__dirname, '../client/build/', 'index.html'));
 });
 
-let game = () => {
-
-    currentQuestion = getRandomQuestion();
-    if(currentQuestion){
-        answeredCorrectly = false;
-
-        let { text, creator } = currentQuestion;
-
-        // create question type message
-        let questionMessage = {
-            text,
-            author: 'Question',
-            time: new Date(),
-            type: 'question',
-            creator
-        }
-
-        messages.push(questionMessage);
-
-        io.emit('messages', messages);
-    }
-}
-
-// send message every 60 seconds
-let gameInterval = setInterval(game, config.roundTime);
-
-io.on('connection', (socket) => {
-    // when user connects, emit the messages
-    socket.emit('messages', messages);
-
-    // get username from client and save the socket
-    socket.on('username', (username) => {
-        socket.username = username;
-        users.push(socket);
-
-        // send all active users to frontend
-        // but only their username
-        io.emit('users', users.map(user => user.username));
-    })
-
-    // when new message comes, save it and emit all the other messages
-    socket.on('new message', (message) => {
-        let newMessage = undefined;
-
-        // trim message
-        message = message.trim();
-
-        // check if it is a slash command
-        // slash commands start with `/`
-        if(message[0] === '/') {
-
-            // check if the slash is `/ans`
-            if(message.slice(0, 4) === '/ans'){
-                // remove /ans from the message and trim to remove spaces
-                message = message.slice(4).trim();
-
-                // check if the message has the correct answer and it was not answeredCorrectly yet
-                if(!answeredCorrectly && currentQuestion){
-
-                    if(message === currentQuestion.correct){
-                        newMessage = {
-                            text: `<strong>${socket.username}</strong> answered correctly! New round begins shortly...`,
-                            author: "Joy ^_^",
-                            time: new Date(),
-                            type: "info"
-                        }
-
-                        answeredCorrectly = true;
-
-                        // restart game
-                        clearInterval(gameInterval);
-                        setTimeout(() => {
-                            game();
-                            gameInterval = setInterval(game, config.roundTime);
-                        }, config.breakTime);
-                    } else { // the answer wasn't correct
-                        // send back to the user that he answered incorrectly
-                        newMessage = {
-                            text: `I'm sorry <strong>${socket.username}</strong>. You have entered a wrong answer.`,
-                            author: "Joy ^_^",
-                            time: new Date(),
-                            type: "error"
-                        }
-                    }
-                }
-            }
-
-        } else {
-            newMessage = {
-                text: message,
-                author: socket.username,
-                time: new Date(),
-                type: "message"
-            }
-        }
-
-        // check to see if the newMessage has value
-        // if doesn't don't emit anything
-        if(newMessage){
-            messages.push(newMessage);
-
-            io.emit('messages', messages);
-        }
-    });
-
-    socket.on('disconnect', () => {
-        console.log(`User ${socket.username} disconnected.`);
-        users.splice(users.indexOf(users.find(user => user.id === socket.id)), 1);
-
-        // send all active users to frontend
-        // but only their username
-        io.emit('users', users.map(user => user.username));
-    })
-});
-
-server.listen(PORT, () => { console.log(`Server running on port ${PORT}`); });
+app.listen(PORT, () => { console.log("Application running on port "+PORT ); });
