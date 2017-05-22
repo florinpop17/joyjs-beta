@@ -1,5 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
+const bcrypt = require('bcrypt');
 
 const User = require('../models/userModel');
 
@@ -19,7 +20,7 @@ userRouter.route('/')
 		});
 	});
 
-userRouter.route('/get_user/:id')
+userRouter.route('/:id')
 	.get((req, res) => {
 		const { id } = req.params;
 
@@ -30,16 +31,35 @@ userRouter.route('/get_user/:id')
 	})
 	.patch((req, res) => {
 		const { id } = req.params;
-		const { email, username, password } = req.body;
+		const { email, username, password, points } = req.body;
 
 		let updatedUser = {};
 
 		if(email) updatedUser.email = email;
 		if(username) updatedUser.username = username;
-		if(password) updatedUser.password = password;
+		if(password){
+
+			// generate a salt
+			let salt = bcrypt.genSaltSync(10);
+
+			// hash password
+			let hash = bcrypt.hashSync(password, salt);
+
+			// store hashed password
+			updatedUser.password = hash;
+		}
+		if(points) updatedUser.points = points;
 
 		User.findByIdAndUpdate(id, updatedUser, (err, user) => {
 			if (err) return res.json({ success: false, message: err });
+
+			// send back updated user
+			for(let key in user){
+				if(updatedUser.hasOwnProperty(key)) { // check if the updatedUser has the same properties
+					user[key] = updatedUser[key];
+				}
+			}
+
 			return res.json({ success: true, user });
 		});
 	})
@@ -52,7 +72,7 @@ userRouter.route('/get_user/:id')
 		});
 	})
 
-userRouter.route('/leaderboard/')
+userRouter.route('/leaderboard')
 	.get((req, res) => {
 		User.find({})
 			.sort('-points')
