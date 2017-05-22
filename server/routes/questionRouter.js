@@ -19,7 +19,7 @@ questionRouter.route('/')
 		});
 	});
 
-questionRouter.route('/get_question/:id')
+questionRouter.route('/:id')
 	.get((req, res) => {
 		const { id } = req.params;
 
@@ -40,6 +40,14 @@ questionRouter.route('/get_question/:id')
 
 		Question.findByIdAndUpdate(id, updatedQuestion, (err, question) => {
 			if (err) return res.json({ success: false, message: err });
+
+			// send back updated question
+			for(let key in question){
+				if(updatedQuestion.hasOwnProperty(key)) { // check if the updatedQuestion has the same properties
+					question[key] = updatedQuestion[key];
+				}
+			}
+
 			return res.json({ success: true, question });
 		});
 	})
