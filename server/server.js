@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
+const cors = require('cors');
 
 const PORT = process.env.port || 3000;
 const userRouter = require('./routes/userRouter');
@@ -16,12 +17,7 @@ mongoose.connect("mongodb://localhost/joyjs");
 app.use(express.static(path.join(__dirname, '../client/build/')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-    next();
-})
+app.use(cors());
 
 // routers
 app.use('/api/users', userRouter);
