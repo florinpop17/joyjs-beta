@@ -8,6 +8,7 @@ const cors = require('cors');
 const PORT = process.env.port || 3000;
 const userRouter = require('./routes/userRouter');
 const questionRouter = require('./routes/questionRouter');
+const authRouter = require('./routes/authRouter');
 
 const config = require('./config');
 
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // routers
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/questions', questionRouter);
 
