@@ -9,9 +9,11 @@ const PORT = process.env.port || 3000;
 const userRouter = require('./routes/userRouter');
 const questionRouter = require('./routes/questionRouter');
 
+const config = require('./config');
+
 // connect to database
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost/joyjs");
+mongoose.connect(config.MONGO_URL);
 
 // middleware
 app.use(express.static(path.join(__dirname, '../client/build/')));
