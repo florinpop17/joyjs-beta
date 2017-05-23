@@ -61,7 +61,17 @@ class App extends Component {
 			this.setState({
 				messages
 			});
-		})
+		});
+
+		socket.on('solo message', (message) => {
+			let { messages } = this.state;
+
+			messages.push(message);
+
+			this.setState({
+				messages
+			})
+		});
 	}
 
 	handleLogout = () => {

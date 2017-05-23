@@ -13,9 +13,26 @@
     position: relative;
 }
 
+.chat-message-question {
+    background-color: #eee;
+}
+
+.chat-message-success {
+    background-color: #008cba;
+}
+
+.chat-message-error {
+    color: #fff;
+    background-color: #b67102;
+}
+
 .chat-message .user-logo{
     max-width: 100%;
     border-radius: 50%;
+}
+
+.chat-message h3 {
+    margin-top: 0;
 }
 
 .chat-message p {

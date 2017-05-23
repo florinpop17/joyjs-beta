@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import './chat.css';
 import Message from './Message';
+import ErrorMessage from './ErrorMessage';
+import SuccessMessage from './SuccessMessage';
+import Question from './Question';
 
 class Chat extends Component {
     componentDidUpdate() {
@@ -29,9 +32,22 @@ class Chat extends Component {
         return (
             <div className="chat-container">
                 <div className="chat-display" id="to_scroll">
-                    { messages.map((message, idx) => (
-                        <Message message={message} key={idx}/>
-                    )) }
+                    { messages.map((message, idx) => {
+                        // check for different types of messages
+                        if(message.type === 'question') {
+                            return <Question message={message} key={idx} />
+                        }
+
+                        if(message.type === 'error') {
+                            return <ErrorMessage message={message} key={idx} />
+                        }
+
+                        if(message.type === 'success') {
+                            return <SuccessMessage message={message} key={idx} />
+                        }
+
+                        return <Message message={message} key={idx} />
+                    }) }
                 </div>
                 <form className="chat-form" onSubmit={this.sendMessage}>
                     <input ref="message" type="text" className="form-control" placeholder="Insert your message here..."/>
