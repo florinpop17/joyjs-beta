@@ -20,6 +20,18 @@ userRouter.route('/')
 		});
 	});
 
+userRouter.route('/leaderboard')
+	.get((req, res) => {
+		User.find({})
+			.sort('-points')
+			.limit(10)
+			.select('username points')
+			.exec((err, users) => {
+				if (err) return res.json({ success: false, message: err });
+				return res.json({ success:true, leaderboard: users });
+			});
+	});
+
 userRouter.route('/:id')
 	.get((req, res) => {
 		const { id } = req.params;
@@ -71,17 +83,5 @@ userRouter.route('/:id')
 			return res.json({ success: true, user });
 		});
 	})
-
-userRouter.route('/leaderboard')
-	.get((req, res) => {
-		User.find({})
-			.sort('-points')
-			.limit(10)
-			.select('username points')
-			.exec((err, users) => {
-				if (err) return res.json({ success: false, message: err });
-				return res.json({ success:true, leaderboard: users });
-			});
-	});
 
 module.exports = userRouter;

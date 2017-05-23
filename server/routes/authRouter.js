@@ -16,12 +16,12 @@ authRouter.route('/')
         User.findOne({ email }, (err, user) => {
             if (err) return res.json({ success: false, message: err });
 
-            if (!user) return res.json({ success: false, message: 'Authentication failed. User not found.' });
+            if (!user) return res.json({ success: false, message: 'Authentication failed. Email not found, please signup.' });
             else {
                 bcrypt.compare(password, user.password, (err, isMatch) => {
                     if (err) return res.json({ success: false, message: err });
 
-                    if (!isMatch) return res.json({ success: false, message: 'Password is incorrect.' });
+                    if (!isMatch) return res.json({ success: false, message: 'Incorrect password.' });
 
                     // create token
                     const token = jwt.sign(user._id, config.SECRET, {

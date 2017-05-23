@@ -9,7 +9,6 @@ class Leaderboard extends Component {
 	componentDidMount() {
 		axios.get('http://localhost:3000/api/users/leaderboard')
 			.then(res => {
-
 				if(res.data.success){
 					this.setState({
 						leaderboard: res.data.leaderboard

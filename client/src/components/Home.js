@@ -22,7 +22,24 @@ class Home extends Component {
 		if(!login_password) errors.push("Password not provided for login.");
 
 		if( errors.length === 0) { // no errors... we can call the api
-
+			let postData = {
+				email: login_email,
+				password: login_password
+			}
+			axios.post('http://localhost:3000/api/auth', postData)
+				.then(res => {
+					if(res.data.success) {
+						localStorage.setItem('token', res.data.token);
+						localStorage.setItem('username', res.data.username);
+						this.props.authenticate();
+					} else {
+						
+						errors.push(res.data.message);
+						this.setState({
+							errors
+						});
+					}
+				});
 		}
 
 		this.setState({
@@ -69,7 +86,6 @@ class Home extends Component {
 					} else { // email or username already existing
 
 						errors.push(res.data.message);
-
 						this.setState({
 							errors
 						});
