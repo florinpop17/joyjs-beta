@@ -1,5 +1,6 @@
 module.exports = (io) => {
     const Question = require('./models/questionModel');
+    const User = require('./models/userModel');
     const config = require('./config');
 
     let questions = [];
@@ -18,7 +19,7 @@ module.exports = (io) => {
             game();
 
             // game loop every 60 seconds
-            let gameInterval = setInterval(game, config.roundTime);
+            gameInterval = setInterval(game, config.roundTime);
         });
 
     // random question
@@ -28,6 +29,8 @@ module.exports = (io) => {
 
     // the game loop
     let game = () => {
+
+        console.log('game...');
 
         currentQuestion = getRandomQuestion();
         answeredCorrectly = false;
@@ -76,27 +79,47 @@ module.exports = (io) => {
                 // check if the slash command is '/ans'
                 if(message_text.slice(0, 4) === '/ans'){
 
-                    // check if the answer is correct
-                    let ans = message_text.slice(4); // get all characters after '/ans'
-                    ans = ans.trim(); // trim the answer
+                    if(!answeredCorrectly) { // the game is running
 
-                    if(ans === currentQuestion.correct_answer) {
+                        // check if the answer is correct
+                        let ans = message_text.slice(4); // get all characters after '/ans'
+                        ans = ans.trim(); // trim the answer
 
-                    } else {
-                        let message = {
-                            text: "You have entered a wrong answer. Please try again!",
-                            type: "error"
+                        if(ans === currentQuestion.correct_answer) {
+
+                            // reset game
+                            answeredCorrectly = true;
+
+                            clearInterval(gameInterval);
+                            setTimeout(() => {
+                                game();
+                                gameInterval = setInterval(game, config.roundTime);
+                            }, config.breakTime);
+
+                            // give point to the user
+                            User.findOneAndUpdate({ username: socket.username }, { $inc: { "points": 1 }} )
+                                .exec((err, user) => {
+                                    let message = {
+                                        text: `Congratulations <strong>${user.username}</strong>! You got it right!! <br /> You now have <strong>${user.points + 1}</strong> points. New round starts soon...`,
+                                        time: new Date(),
+                                        type: "success"
+                                    }
+
+                                    messages.push(message);
+                                    messages = messages.slice(-200); // only keep the last 200 messages
+
+                                    io.emit("all messages", messages);
+                                });
+
+                        } else {
+                            sendErrorMessage("Wrong answer... Please try again!");
                         }
-                        
-                        socket.emit("solo message", message);
-                    }
-                } else {
-                    let message = {
-                        text: "Slash command doesn't exist",
-                        type: "error"
+                    } else { // the game is not running
+                        sendErrorMessage("Hold on cowboy! The round is not yet started!");
                     }
 
-                    socket.emit("solo message", message);
+                } else {
+                    sendErrorMessage("Slash command doesn't exist.");
                 }
             } else {
                 let message = {
@@ -134,5 +157,17 @@ module.exports = (io) => {
 
         console.log('Available users', users);
     });
+
+    // helped errorMessage
+    let sendErrorMessage = (text) => {
+        let message = {
+            text,
+            time: new Date(),
+            type: "error"
+        }
+
+        socket.emit("solo message", message);
+    }
+
 });
 }

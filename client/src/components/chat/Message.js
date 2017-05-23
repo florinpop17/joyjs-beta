@@ -14,7 +14,7 @@ class Message extends Component {
                     <div className="col-sm-11">
                         <strong>{ message.username }</strong>
                         <p>{ message.text }</p>
-                        <small>{ new Date(message.time).toLocaleTimeString() }</small>
+                        <span>{ new Date(message.time).toLocaleTimeString() }</span>
                     </div>
                 </div>
             </div>

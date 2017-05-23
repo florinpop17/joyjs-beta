@@ -18,6 +18,7 @@
 }
 
 .chat-message-success {
+    color: #fff;
     background-color: #008cba;
 }
 
@@ -35,14 +36,19 @@
     margin-top: 0;
 }
 
+.chat-message small {
+    font-size: 12px;
+}
+
 .chat-message p {
     margin: 0;
 }
 
-.chat-message small {
+.chat-message span {
     position: absolute;
     top: 0;
     right: 15px;
+    font-size: 12px;
 }
 
 .chat-form {

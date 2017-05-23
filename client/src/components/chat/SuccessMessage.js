@@ -8,7 +8,8 @@ class SuccessMessage extends Component {
             <div className="chat-message chat-message-success">
                 <div className="row">
                     <div className="col-sm-12">
-                        <p>{ message.text }</p>
+                        <div dangerouslySetInnerHTML={{ __html: message.text }} />
+                        <span>{ new Date(message.time).toLocaleTimeString() }</span>
                     </div>
                 </div>
             </div>

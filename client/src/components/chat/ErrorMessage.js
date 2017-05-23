@@ -9,6 +9,7 @@ class ErrorMessage extends Component {
                 <div className="row">
                     <div className="col-sm-12">
                         <p>{ message.text }</p>
+                        <span>{ new Date(message.time).toLocaleTimeString() }</span>
                     </div>
                 </div>
             </div>

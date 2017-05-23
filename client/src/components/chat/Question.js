@@ -8,9 +8,9 @@ class Question extends Component {
             <div className="chat-message chat-message-question">
                 <div className="row">
                     <div className="col-sm-12">
-                        <h3>Question</h3>
+                        <h3>Question <small>Created by: <strong>{ message.author }</strong></small></h3>
                         <div dangerouslySetInnerHTML={{ __html: message.text }} />
-                        <small>{ new Date(message.time).toLocaleTimeString() }</small>
+                        <span>{ new Date(message.time).toLocaleTimeString() }</span>
                     </div>
                 </div>
             </div>
