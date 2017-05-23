@@ -1,0 +1,21 @@
+.chat-container {
+    border: 1px solid #ddd;
+}
+
+.chat-display {
+    height: 60vh;
+    overflow: auto;
+}
+
+.chat-message {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 10px;
+}
+
+.chat-message p {
+    margin: 0;
+}
+
+.chat-form {
+    padding: 15px 10px;
+}

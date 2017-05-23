@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -33,4 +35,7 @@ app.get("/", (req, res) => {
     res.send(path.join(__dirname, '../client/build/', 'index.html'));
 });
 
-app.listen(PORT, () => { console.log("Application running on port "+PORT ); });
+// the game logic
+require('./game')(io);
+
+server.listen(PORT, () => { console.log("Application running on port "+PORT ); });

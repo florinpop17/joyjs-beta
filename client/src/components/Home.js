@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import validator from 'validator';
 import axios from 'axios';
+import config from '../config'
 
 import Alert from './alert/Alert.js';
 
@@ -26,14 +27,14 @@ class Home extends Component {
 				email: login_email,
 				password: login_password
 			}
-			axios.post('http://localhost:3000/api/auth', postData)
+			axios.post(`${config.API_URL}/api/auth`, postData)
 				.then(res => {
 					if(res.data.success) {
 						localStorage.setItem('token', res.data.token);
 						localStorage.setItem('username', res.data.username);
 						this.props.authenticate();
 					} else {
-						
+
 						errors.push(res.data.message);
 						this.setState({
 							errors
@@ -72,10 +73,10 @@ class Home extends Component {
 				username: signup_username,
 				password: signup_password
 			}
-			axios.post('http://localhost:3000/api/users', postData)
+			axios.post(`${config.API_URL}/api/users`, postData)
 				.then(res => {
 					if(res.data.success) { // all good... get the token and authenticate
-						axios.post('http://localhost:3000/api/auth', postData)
+						axios.post(`${config.API_URL}/api/auth`, postData)
 							.then(res => {
 								if(res.data.success) {
 									localStorage.setItem('token', res.data.token);

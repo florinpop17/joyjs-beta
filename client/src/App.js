@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch, Link } from 'react-router-dom';
 import axios from 'axios';
+import config from './config';
+import io from 'socket.io-client';
 
-import Chat from './components/Chat';
+import Game from './components/Game';
 import Home from './components/Home';
 import Leaderboard from './components/Leaderboard';
 
@@ -11,26 +13,71 @@ class App extends Component {
 		super();
 
 		this.state = {
-			isAuth: false
+			isAuth: false,
+			socket: undefined,
+			users: [],
+			messages: [],
+			username: undefined
 		}
 	}
 
 	handleAuthentication = () => {
 		let token = localStorage.getItem('token');
-		axios.post('http://localhost:3000/api/auth/checkToken', { token })
+		axios.post(`${config.API_URL}/api/auth/checkToken`, { token })
 			.then(res => {
 				if(res.data.success) {
-					this.setState({ isAuth: true });
+
+					const socket = io.connect(config.API_URL);
+					const username = localStorage.getItem('username');
+
+					// send the username to the socket server
+					socket.emit('username', username);
+
+					this.setState({
+						isAuth: true,
+						socket,
+						username
+					});
+
+					this.handleSocketRequests(socket);
+
 				} else {
-					this.setState({ isAuth: false });
+					this.setState({
+						isAuth: false,
+						socket: undefined
+					});
 				}
 			});
 	}
 
+	handleSocketRequests = (socket) => {
+		socket.on('all users', (users) => {
+			this.setState({
+				users
+			});
+		});
+
+		socket.on('all messages', (messages) => {
+			this.setState({
+				messages
+			});
+		})
+	}
+
 	handleLogout = () => {
+		const { socket } = this.state;
+
+		socket.emit('remove user');
+
 		localStorage.removeItem('token');
 		localStorage.removeItem('username');
-		this.setState({ isAuth: false });
+		this.setState({
+			isAuth: false,
+			socket: undefined,
+			username: undefined,
+			messages: [],
+			users: []
+		});
 	}
 
 	componentDidMount() {
@@ -38,7 +85,7 @@ class App extends Component {
 	}
 
 	render() {
-		const { isAuth } = this.state;
+		const { isAuth, socket, users, messages, username } = this.state;
 
 		return (
 			<Router>
@@ -68,7 +115,7 @@ class App extends Component {
 
 						<Switch>
 							<Route exact path="/" render={() => {
-								return isAuth ? <Chat /> : <Home authenticate={this.handleAuthentication}/>
+								return isAuth ? <Game socket={socket} users={users} messages={messages} username={username} /> : <Home authenticate={this.handleAuthentication}/>
 							}} />
 							<Route path="/leaderboard" render={() => {
 								return isAuth ? <Leaderboard /> : <Redirect to="/" />

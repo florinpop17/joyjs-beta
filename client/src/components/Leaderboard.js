@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 class Leaderboard extends Component {
 	state = {
@@ -7,7 +8,7 @@ class Leaderboard extends Component {
 	}
 
 	componentDidMount() {
-		axios.get('http://localhost:3000/api/users/leaderboard')
+		axios.get(`${config.API_URL}/api/users/leaderboard`)
 			.then(res => {
 				if(res.data.success){
 					this.setState({
