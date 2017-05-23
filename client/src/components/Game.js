@@ -26,7 +26,10 @@ class Game extends Component {
 								{ users.map((user, idx) => (<li className="list-group-item" key={idx}>{ user }</li>)) }
 							</ul>
 						) : '' }
-						<pre>Welcome, { username }!</pre>
+						<p>
+							Slash command: <br />
+							<strong>/ans <em>your_answer</em></strong>
+						</p>
 					</div>
 				</div>
 			</div>
