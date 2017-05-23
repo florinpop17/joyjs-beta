@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './chat.css';
+import Message from './Message';
 
 class Chat extends Component {
     componentDidUpdate() {
@@ -28,13 +29,8 @@ class Chat extends Component {
         return (
             <div className="chat-container">
                 <div className="chat-display" id="to_scroll">
-                    <div className="server-message">
-                        Hello from server!
-                    </div>
                     { messages.map((message, idx) => (
-                        <div className="chat-message" key={idx}>
-                            <p><strong>{ message.username }: </strong> { message.text } <small className="pull-right">{ new Date(message.time).toLocaleTimeString() }</small></p>
-                        </div>
+                        <Message message={message} key={idx}/>
                     )) }
                 </div>
                 <form className="chat-form" onSubmit={this.sendMessage}>

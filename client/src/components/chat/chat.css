@@ -9,11 +9,23 @@
 
 .chat-message {
     border-bottom: 1px solid #ddd;
-    padding: 15px 10px;
+    padding: 10px 15px;
+    position: relative;
+}
+
+.chat-message .user-logo{
+    max-width: 100%;
+    border-radius: 50%;
 }
 
 .chat-message p {
     margin: 0;
+}
+
+.chat-message small {
+    position: absolute;
+    top: 0;
+    right: 15px;
 }
 
 .chat-form {

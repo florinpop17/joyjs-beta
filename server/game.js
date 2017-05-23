@@ -25,17 +25,17 @@ module.exports = (io) => {
             }
 
             messages.push(message);
-
-            messages = messages.slice(-50); // only keep the last 50 messages
-
-            console.log('new message');
+            messages = messages.slice(-200); // only keep the last 200 messages
 
             io.emit('all messages', messages);
         });
 
         socket.on('remove user', () => { // duplicate of the disconnect because socket.emit('disconnect') doesn't work on client
+            console.log('remove user is called');
             console.log(`Username ${socket.username}, left the game.`);
-            users.splice(users.indexOf(socket.username), 1);
+
+            if(users.indexOf(socket.username) > -1) // if user exists remove it from users array
+                users.splice(users.indexOf(socket.username), 1);
 
             io.emit('all users', users);
 
@@ -44,7 +44,9 @@ module.exports = (io) => {
 
         socket.on('disconnect', () => {
             console.log(`Username ${socket.username}, left the game.`);
-            users.splice(users.indexOf(socket.username), 1);
+
+            if(users.indexOf(socket.username) > -1) // if user exists remove it from users array
+                users.splice(users.indexOf(socket.username), 1);
 
             io.emit('all users', users);
 
