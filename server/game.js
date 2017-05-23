@@ -1,3 +1,11 @@
+const Question = require('./models/questionModel');
+
+Question.find({})
+    .select('author text correct_answer')
+    .exec((err, questions) => {
+        console.log(questions);
+    });
+
 module.exports = (io) => {
     let users = [];
     let messages = [];
