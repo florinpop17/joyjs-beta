@@ -31,7 +31,7 @@ authRouter.route('/')
                     res.header("x-access-token", token);
 
                     // return the token
-                    return res.json({ success: true, message: 'Enjoy your token!', token });
+                    return res.json({ success: true, message: 'Enjoy your token!', token, username: user.username });
                 });
             }
         });
@@ -57,7 +57,7 @@ authRouter.route('/checkToken')
             });
         } else {
             // no token, return an error
-            return res.status(403).send({ success: false, message: 'No token provided.' });
+            return res.json({ success: false, message: 'No token provided.' });
         }
     });
 

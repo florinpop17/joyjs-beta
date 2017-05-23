@@ -15,7 +15,7 @@ userRouter.route('/')
 		const { email, username, password } = req.body;
 
 		User.create({ email, username, password }, (err, user) => {
-			if (err) return res.json({ success: false, message: err });
+			if (err) return res.json({ success: false, message: 'Email or username already exist. Please login instead.' });
 			return res.json({ success: true, user });
 		});
 	});

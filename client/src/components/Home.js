@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
+import axios from 'axios';
 
 import Alert from './alert/Alert.js';
 
@@ -19,8 +20,10 @@ class Home extends Component {
 		if(!login_email || !validator.isEmail(login_email)) errors.push("Login email is not a valid email.");
 
 		if(!login_password) errors.push("Password not provided for login.");
-		else if (login_password.length < 6) errors.push("Password must be at least 6 characters long.");
 
+		if( errors.length === 0) { // no errors... we can call the api
+
+		}
 
 		this.setState({
 			errors
@@ -42,9 +45,37 @@ class Home extends Component {
 		if(!signup_username) errors.push("Username not provided for signup.");
 
 		if(!signup_password) errors.push("Password not provided for signup.");
+		// else if(signup_password.length < 6) errors.push("Password must be at least 6 characters long.");
 		else if(!signup_password_two) errors.push("Reset password not provided for signup.");
-		else if(!validator.equals(signup_password, signup_password_two)) errors.push("The passwords provided for signup doens\'t match.");
+		else if(!validator.equals(signup_password, signup_password_two)) errors.push("The passwords provided for signup doens't match.");
 
+		if( errors.length === 0) { // no errors... we can call the api
+			let postData = {
+				email: signup_email,
+				username: signup_username,
+				password: signup_password
+			}
+			axios.post('http://localhost:3000/api/users', postData)
+				.then(res => {
+					if(res.data.success) { // all good... get the token and authenticate
+						axios.post('http://localhost:3000/api/auth', postData)
+							.then(res => {
+								if(res.data.success) {
+									localStorage.setItem('token', res.data.token);
+									localStorage.setItem('username', res.data.username);
+									this.props.authenticate();
+								}
+							});
+					} else { // email or username already existing
+
+						errors.push(res.data.message);
+
+						this.setState({
+							errors
+						});
+					}
+				});
+		}
 
 		this.setState({
 			errors
