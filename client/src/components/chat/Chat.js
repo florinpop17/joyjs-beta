@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
 import './Chat.css';
-import Message from './Message';
-import ErrorMessage from './ErrorMessage';
-import SuccessMessage from './SuccessMessage';
-import InfoMessage from './InfoMessage';
-import Question from './Question';
+import RegularMessage from '../messages/RegularMessage';
+import ErrorMessage from '../messages/ErrorMessage';
+import SuccessMessage from '../messages/SuccessMessage';
+import InfoMessage from '../messages/InfoMessage';
+import QuestionMessage from '../messages/QuestionMessage';
 
 class Chat extends Component {
     componentDidUpdate() {
@@ -44,7 +44,7 @@ class Chat extends Component {
                     { messages.map((message, idx) => {
                         // check for different types of messages
                         if(message.type === 'question') {
-                            return <Question message={message} key={idx} />
+                            return <QuestionMessage message={message} key={idx} />
                         }
 
                         if(message.type === 'error') {
@@ -59,7 +59,7 @@ class Chat extends Component {
                             return <InfoMessage message={message} key={idx} />
                         }
 
-                        return <Message message={message} key={idx} />
+                        return <RegularMessage message={message} key={idx} />
                     }) }
                 </div>
                 <form className="chat-form" onSubmit={this.sendMessage}>

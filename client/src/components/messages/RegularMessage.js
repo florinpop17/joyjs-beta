@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import icon from './icon-user.png'
 
-class Message extends Component {
+class RegularMessage extends Component {
     render() {
         const { message } = this.props;
 
@@ -22,4 +22,4 @@ class Message extends Component {
     }
 }
 
-export default Message;
+export default RegularMessage;

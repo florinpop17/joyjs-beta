@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 import Game from './components/Game';
 import Home from './components/Home';
 import Leaderboard from './components/Leaderboard';
+import AddQuestion from './components/AddQuestion';
 
 class App extends Component {
 	constructor() {
@@ -95,7 +96,7 @@ class App extends Component {
 	}
 
 	render() {
-		const { isAuth, socket, users, messages } = this.state;
+		const { isAuth, socket, users, messages, username } = this.state;
 
 		return (
 			<Router>
@@ -117,6 +118,7 @@ class App extends Component {
 								{ isAuth ? (
 	                                <ul className="nav navbar-nav navbar-right">
 										<li><Link to="/leaderboard">Leaderboard</Link></li>
+										<li><Link to="/add">Add Question</Link></li>
 										<li><Link to="/" onClick={this.handleLogout}>Logout</Link></li>
 	                                </ul>
 								) : ''}
@@ -129,6 +131,9 @@ class App extends Component {
 							}} />
 							<Route path="/leaderboard" render={() => {
 								return isAuth ? <Leaderboard /> : <Redirect to="/" />
+							}} />
+							<Route path="/add" render={() => {
+								return isAuth ? <AddQuestion username={username} /> : <Redirect to="/" />
 							}} />
 						</Switch>
 					</div>

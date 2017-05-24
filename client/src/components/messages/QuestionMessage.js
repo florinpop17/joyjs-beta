@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Question extends Component {
+class QuestionMessage extends Component {
     render() {
         const { message } = this.props;
 
@@ -18,4 +18,4 @@ class Question extends Component {
     }
 }
 
-export default Question;
+export default QuestionMessage;
