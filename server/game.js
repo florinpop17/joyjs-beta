@@ -85,7 +85,8 @@ module.exports = (io) => {
                         let ans = message_text.slice(4); // get all characters after '/ans'
                         ans = ans.trim(); // trim the answer
 
-                        if(ans === currentQuestion.correct_answer) {
+                        // lowercase and check answers
+                        if(ans.toLowercase() === currentQuestion.correct_answer.toLowercase()) {
 
                             // reset game
                             answeredCorrectly = true;
