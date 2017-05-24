@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 
-const PORT = process.env.port || 80;
+const PORT = process.env.port || 3000;
 const userRouter = require('./routes/userRouter');
 const questionRouter = require('./routes/questionRouter');
 const authRouter = require('./routes/authRouter');
@@ -22,7 +22,7 @@ mongoose.connect(config.MONGO_URL);
 app.use(express.static(path.join(__dirname, '../client/build/')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cors());
+app.use(cors());
 
 // routers
 app.use('/api/auth', authRouter);

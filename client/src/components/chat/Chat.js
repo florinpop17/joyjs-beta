@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './chat.css';
+import './Chat.css';
 import Message from './Message';
 import ErrorMessage from './ErrorMessage';
 import SuccessMessage from './SuccessMessage';

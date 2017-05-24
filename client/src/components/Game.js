@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Chat from './chat/Chat';
+import InfoModal from './modal/InfoModal';
 
 class Game extends Component {
 
@@ -11,7 +12,7 @@ class Game extends Component {
 	}
 
 	render() {
-		const { username, users, messages } = this.props;
+		const { users, messages } = this.props;
 		return (
 			<div className="container">
 				<div className="row">
@@ -26,10 +27,9 @@ class Game extends Component {
 								{ users.map((user, idx) => (<li className="list-group-item" key={idx}>{ user }</li>)) }
 							</ul>
 						) : '' }
-						<p>
-							Slash command: <br />
-							<strong>/ans <em>your_answer</em></strong>
-						</p>
+
+						<InfoModal />
+						
 					</div>
 				</div>
 			</div>

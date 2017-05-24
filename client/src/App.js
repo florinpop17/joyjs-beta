@@ -95,7 +95,7 @@ class App extends Component {
 	}
 
 	render() {
-		const { isAuth, socket, users, messages, username } = this.state;
+		const { isAuth, socket, users, messages } = this.state;
 
 		return (
 			<Router>
@@ -125,7 +125,7 @@ class App extends Component {
 
 						<Switch>
 							<Route exact path="/" render={() => {
-								return isAuth ? <Game socket={socket} users={users} messages={messages} username={username} /> : <Home authenticate={this.handleAuthentication}/>
+								return isAuth ? <Game socket={socket} users={users} messages={messages} /> : <Home authenticate={this.handleAuthentication}/>
 							}} />
 							<Route path="/leaderboard" render={() => {
 								return isAuth ? <Leaderboard /> : <Redirect to="/" />

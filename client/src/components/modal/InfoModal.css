@@ -1,0 +1,17 @@
+.modal-content {
+    border: none;
+}
+
+.modal-header {
+    background-color: #008cba;
+    color: #fff;
+}
+
+.modal-header button.close {
+    color: #fff;
+    opacity: 1;
+}
+
+.modal-body h3 {
+    margin-top: 0;
+}
