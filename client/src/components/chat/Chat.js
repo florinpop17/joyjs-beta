@@ -9,10 +9,12 @@ import Question from './Question';
 
 class Chat extends Component {
     componentDidUpdate() {
+        console.log('CDU');
         this.scrollBottom();
     }
 
     componentDidMount() {
+        console.log('CDM');
         this.scrollBottom();
         this.refs.message.focus();
     }
@@ -29,6 +31,7 @@ class Chat extends Component {
 
     scrollBottom = () => {
         let to_scroll = document.getElementById('to_scroll');
+
         if(to_scroll)
             to_scroll.scrollTop = to_scroll.scrollHeight;
     }

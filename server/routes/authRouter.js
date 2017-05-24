@@ -7,7 +7,7 @@ const config = require('../config');
 const User = require('../models/userModel');
 
 authRouter.route('/')
-    .post((req, res) => {
+    .post((req, res, next) => {
         const { email, password } = req.body;
 
         if(!email) return res.json({ success: false, message: "Please provide email!" });
@@ -29,6 +29,7 @@ authRouter.route('/')
                     });
 
                     res.header("x-access-token", token);
+                    req.token = token;
 
                     // return the token
                     return res.json({ success: true, message: 'Enjoy your token!', token, username: user.username });
@@ -41,7 +42,7 @@ authRouter.route('/checkToken')
     .post((req, res) => {
 
         // check header or url parameters or post parameters for token
-        const token = req.body.token || req.query.token || req.headers['x-access-token'];
+        const token = req.body.token || req.token || req.headers['x-access-token'];
 
         // decode token
         if (token) {

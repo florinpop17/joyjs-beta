@@ -25,6 +25,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // routers
+// save token if any
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/questions', questionRouter);

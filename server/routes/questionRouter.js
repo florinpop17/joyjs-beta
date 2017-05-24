@@ -19,6 +19,11 @@ questionRouter.route('/')
 		});
 	});
 
+questionRouter.use('/:id', (req, res, next) => {
+	console.log('route /:id');
+	next();
+})
+
 questionRouter.route('/:id')
 	.get((req, res) => {
 		const { id } = req.params;
