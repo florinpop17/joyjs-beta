@@ -34,7 +34,7 @@ class AddQuestion extends Component {
 
     submitQuestion = () => {
         let { text, correct_answer } = this.refs;
-        let { errors } = this.state;
+        let { errors, output } = this.state;
         const { username } = this.props;
 
         text = text.value;
@@ -45,7 +45,7 @@ class AddQuestion extends Component {
 
         if(errors.length === 0) { // we don't have erors
             let question = {
-                text,
+                text: output,
                 correct_answer,
                 author: username
             }

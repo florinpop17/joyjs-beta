@@ -24,7 +24,7 @@ authRouter.route('/')
                     if (!isMatch) return res.json({ success: false, message: 'Incorrect password.' });
 
                     // create token
-                    const token = jwt.sign(user._id, config.SECRET, {
+                    const token = jwt.sign({ username: user.username }, config.SECRET, {
                         expiresIn: 10080 // expires in 7 days
                     });
 

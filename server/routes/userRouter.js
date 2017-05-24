@@ -1,6 +1,8 @@
 const express = require('express');
 const userRouter = express.Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
 
 const User = require('../models/userModel');
 
@@ -17,6 +19,30 @@ userRouter.route('/')
 		User.create({ email, username, password }, (err, user) => {
 			if (err) return res.json({ success: false, message: 'Email or username already exist. Please login instead.' });
 			return res.json({ success: true, user });
+		});
+	});
+
+// get user information based on the token
+userRouter.route('/me')
+	.post((req, res) => {
+		const { token } = req.body;
+
+		if(!token) {
+			return res.json({ success: false, message: 'Not authorized!' });
+		}
+
+		// verify token and get back the decoded username
+		jwt.verify(token, config.SECRET, (err, decode) => {
+			if (err) return res.json({ success: false, message: err });
+
+			let username = decode.username;
+
+			User.find({ username })
+				.select('points admin')
+				.exec((err, user) => {
+					if (err) return res.json({ success: false, message: err });
+					return res.json({ success: true, user });
+				});
 		});
 	});
 
