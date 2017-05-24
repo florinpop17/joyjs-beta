@@ -33,9 +33,9 @@ app.use('/api/questions', questionRouter);
 app.use('/api/questionsToReview', questionToReviewRouter);
 
 // default route
-app.get("/", (req, res) => {
+app.get("/*", (req, res) => {
     // send static files
-    res.send(path.join(__dirname, '../client/build/', 'index.html'));
+    res.sendFile(path.join(__dirname, '../client/build/', 'index.html'));
 });
 
 // the game logic
