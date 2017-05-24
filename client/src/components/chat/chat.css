@@ -22,6 +22,11 @@
     background-color: #008cba;
 }
 
+.chat-message-info {
+    color: #fff;
+    background-color: #5bc0de;
+}
+
 .chat-message-error {
     color: #fff;
     background-color: #b67102;

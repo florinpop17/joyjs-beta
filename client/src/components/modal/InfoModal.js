@@ -26,7 +26,7 @@ class InfoModal extends Component {
                                     </div>
                                     <div className="list-group-item">
                                         <h4 className="list-group-item-heading">/score</h4>
-                                        <p className="list-group-item-text">- receive the number of points you currently have</p>
+                                        <p className="list-group-item-text">- receive the number of points you have</p>
                                     </div>
                                 </div>
                             </div>

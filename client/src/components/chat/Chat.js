@@ -4,6 +4,7 @@ import './Chat.css';
 import Message from './Message';
 import ErrorMessage from './ErrorMessage';
 import SuccessMessage from './SuccessMessage';
+import InfoMessage from './InfoMessage';
 import Question from './Question';
 
 class Chat extends Component {
@@ -44,6 +45,10 @@ class Chat extends Component {
 
                         if(message.type === 'success') {
                             return <SuccessMessage message={message} key={idx} />
+                        }
+
+                        if(message.type === 'info') {
+                            return <InfoMessage message={message} key={idx} />
                         }
 
                         return <Message message={message} key={idx} />

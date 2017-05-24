@@ -118,6 +118,13 @@ module.exports = (io) => {
                         sendErrorMessage("Hold on cowboy! The round is not yet started!");
                     }
 
+                // check if the slash command is /score
+                } else if(message_text.slice(0, 6) === '/score') {
+                    User.findOne({ username: socket.username })
+                        .select('points')
+                        .exec((err, user) => {
+                            sendInfoMessage(`You currently have <strong>${user.points}</strong> points. Keep playing for more! ^_^`);
+                        });
                 } else {
                     sendErrorMessage("Slash command doesn't exist.");
                 }
@@ -158,12 +165,23 @@ module.exports = (io) => {
         console.log('Available users', users);
     });
 
-    // helped errorMessage
+    // helper errorMessage
     let sendErrorMessage = (text) => {
         let message = {
             text,
             time: new Date(),
             type: "error"
+        }
+
+        socket.emit("solo message", message);
+    }
+
+    // helper infoMessage
+    let sendInfoMessage = (text) => {
+        let message = {
+            text,
+            time: new Date(),
+            type: "info"
         }
 
         socket.emit("solo message", message);
