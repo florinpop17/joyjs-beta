@@ -34,7 +34,7 @@ class AddQuestion extends Component {
 
     submitQuestion = () => {
         let { text, correct_answer } = this.refs;
-        let { errors, output } = this.state;
+        let { errors } = this.state;
         const { username } = this.props;
 
         text = text.value;
@@ -45,7 +45,7 @@ class AddQuestion extends Component {
 
         if(errors.length === 0) { // we don't have erors
             let question = {
-                text: output,
+                text: marked(text),
                 correct_answer,
                 author: username
             }
@@ -99,7 +99,7 @@ class AddQuestion extends Component {
                         </div>
                     ) : '' }
                     { success ? (
-                        <div className="col-ms-12">
+                        <div className="col-md-12">
                             <Alert type="success" message={success} />
                         </div>
                     ) : '' }

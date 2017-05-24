@@ -74,72 +74,84 @@ module.exports = (io) => {
         socket.on('chat message', (message_text) => {
             message_text = message_text.trim(); // remove spaces
 
-            if(isSlash(message_text)) {
+            // check for the case when the user might remain on the frontend with no username when the server shutsdown
+            if(socket.username) {
 
-                // check if the slash command is '/ans'
-                if(message_text.slice(0, 4) === '/ans'){
+                // check for valid slash command
+                if(isSlash(message_text)) {
 
-                    if(!answeredCorrectly) { // the game is running
+                    // check if the slash command is '/ans'
+                    if(message_text.slice(0, 4) === '/ans'){
 
-                        // check if the answer is correct
-                        let ans = message_text.slice(4); // get all characters after '/ans'
-                        ans = ans.trim(); // trim the answer
+                        if(!answeredCorrectly) { // the game is running
 
-                        // lowercase and check answers
-                        if(ans.toLowercase() === currentQuestion.correct_answer.toLowercase()) {
+                            // check if the answer is correct
+                            let ans = message_text.slice(4); // get all characters after '/ans'
+                            ans = ans.trim(); // trim the answer
 
-                            // reset game
-                            answeredCorrectly = true;
+                            // lowercase and check answers
+                            if(ans.toLowerCase() === currentQuestion.correct_answer.toLowerCase()) {
 
-                            clearInterval(gameInterval);
-                            setTimeout(() => {
-                                game();
-                                gameInterval = setInterval(game, config.roundTime);
-                            }, config.breakTime);
+                                // reset game
+                                answeredCorrectly = true;
 
-                            // give point to the user
-                            User.findOneAndUpdate({ username: socket.username }, { $inc: { "points": 1 }} )
-                                .exec((err, user) => {
-                                    let message = {
-                                        text: `Congratulations <strong>${user.username}</strong>! You got it right!! <br /> You now have <strong>${user.points + 1}</strong> points. New round starts soon...`,
-                                        time: new Date(),
-                                        type: "success"
-                                    }
+                                clearInterval(gameInterval);
+                                setTimeout(() => {
+                                    game();
+                                    gameInterval = setInterval(game, config.roundTime);
+                                }, config.breakTime);
 
-                                    messages.push(message);
-                                    messages = messages.slice(-200); // only keep the last 200 messages
+                                // give point to the user
+                                User.findOneAndUpdate({ username: socket.username }, { $inc: { "points": 1 }} )
+                                    .exec((err, user) => {
 
-                                    io.emit("all messages", messages);
-                                });
+                                        // it might happen to get a user to be undefined if the server stops and the socket is still connected
+                                        // to prevent this, we check if it is a user
+                                        if (user) {
+                                            let message = {
+                                                text: `Congratulations <strong>${user.username}</strong>! You got it right!! <br /> You now have <strong>${user.points + 1}</strong> points. New round starts soon...`,
+                                                time: new Date(),
+                                                type: "success"
+                                            }
 
-                        } else {
-                            sendErrorMessage("Wrong answer... Please try again!");
+                                            messages.push(message);
+                                            messages = messages.slice(-200); // only keep the last 200 messages
+
+                                            io.emit("all messages", messages);
+                                        }
+                                    });
+
+                            } else {
+                                sendErrorMessage("Wrong answer... Please try again!");
+                            }
+                        } else { // the game is not running
+                            sendErrorMessage("Hold on cowboy! The round is not yet started!");
                         }
-                    } else { // the game is not running
-                        sendErrorMessage("Hold on cowboy! The round is not yet started!");
+
+                    // check if the slash command is /score
+                    } else if(message_text.slice(0, 6) === '/score') {
+                        User.findOne({ username: socket.username })
+                            .select('points')
+                            .exec((err, user) => {
+                                sendInfoMessage(`You currently have <strong>${user.points}</strong> points. Keep playing for more! ^_^`);
+                            });
+                    } else {
+                        sendErrorMessage("Slash command doesn't exist.");
+                    }
+                } else {
+                    let message = {
+                        username: socket.username,
+                        text: message_text,
+                        time: new Date()
                     }
 
-                // check if the slash command is /score
-                } else if(message_text.slice(0, 6) === '/score') {
-                    User.findOne({ username: socket.username })
-                        .select('points')
-                        .exec((err, user) => {
-                            sendInfoMessage(`You currently have <strong>${user.points}</strong> points. Keep playing for more! ^_^`);
-                        });
-                } else {
-                    sendErrorMessage("Slash command doesn't exist.");
+                    messages.push(message);
+                    messages = messages.slice(-200); // only keep the last 200 messages
+
+                    io.emit('all messages', messages);
                 }
             } else {
-                let message = {
-                    username: socket.username,
-                    text: message_text,
-                    time: new Date()
-                }
-
-                messages.push(message);
-                messages = messages.slice(-200); // only keep the last 200 messages
-
-                io.emit('all messages', messages);
+                sendErrorMessage("The server restarted, please refresh the page!");
             }
         });
 

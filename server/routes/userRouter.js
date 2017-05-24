@@ -37,7 +37,7 @@ userRouter.route('/me')
 
 			let username = decode.username;
 
-			User.find({ username })
+			User.findOne({ username })
 				.select('points admin')
 				.exec((err, user) => {
 					if (err) return res.json({ success: false, message: err });
