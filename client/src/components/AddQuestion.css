@@ -1,0 +1,19 @@
+.add-question-container {
+    margin-top: 5%;
+}
+
+.add-question-container textarea,
+.add-question-container .display-question {
+    height: 50vh;
+}
+
+.add-question-container .display-question {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    margin-bottom: 40px;
+}
+
+.add-question-container .display-question > *:first-of-type {
+    margin-top: 0;
+}

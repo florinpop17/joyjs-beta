@@ -9,12 +9,10 @@ import QuestionMessage from '../messages/QuestionMessage';
 
 class Chat extends Component {
     componentDidUpdate() {
-        console.log('CDU');
         this.scrollBottom();
     }
 
     componentDidMount() {
-        console.log('CDM');
         this.scrollBottom();
         this.refs.message.focus();
     }
