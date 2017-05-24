@@ -10,6 +10,7 @@ const cors = require('cors');
 const PORT = process.env.port || 3000;
 const userRouter = require('./routes/userRouter');
 const questionRouter = require('./routes/questionRouter');
+const questionToReviewRouter = require('./routes/questionToReviewRouter');
 const authRouter = require('./routes/authRouter');
 
 const config = require('./config');
@@ -29,6 +30,7 @@ app.use(cors());
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/questions', questionRouter);
+app.use('/api/questionsToReview', questionToReviewRouter);
 
 // default route
 app.get("/", (req, res) => {

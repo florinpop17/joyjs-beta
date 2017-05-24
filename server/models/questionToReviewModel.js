@@ -20,4 +20,4 @@ const QuestionToReviewSchema = new Schema({
 	}
 });
 
-module.exports = mongoose.model('Question', QuestionToReviewSchema);
+module.exports = mongoose.model('QuestionToReview', QuestionToReviewSchema);

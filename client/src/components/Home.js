@@ -45,7 +45,14 @@ class Home extends Component {
 
 		this.setState({
 			errors
-		})
+		});
+
+		// remove alerts after 5 seconds
+		setTimeout(() => {
+			this.setState({
+				errors: []
+			})
+		}, 5000);
 	}
 
 	handleSignUp = (e) => {
@@ -96,9 +103,14 @@ class Home extends Component {
 
 		this.setState({
 			errors
-		})
+		});
 
-
+		// remove alerts after 5 seconds
+		setTimeout(() => {
+			this.setState({
+				errors: []
+			})
+		}, 5000);
 	}
 
 	render() {

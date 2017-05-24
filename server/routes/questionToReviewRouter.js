@@ -19,11 +19,6 @@ questionToReviewRouter.route('/')
 		});
 	});
 
-questionToReviewRouter.use('/:id', (req, res, next) => {
-	console.log('route /:id');
-	next();
-})
-
 questionToReviewRouter.route('/:id')
 	.delete((req, res) => {
 		const { id } = req.params;

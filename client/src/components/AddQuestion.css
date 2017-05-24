@@ -4,7 +4,7 @@
 
 .add-question-container textarea,
 .add-question-container .display-question {
-    height: 50vh;
+    height: 40vh;
 }
 
 .add-question-container .display-question {
@@ -14,6 +14,10 @@
     margin-bottom: 40px;
 }
 
-.add-question-container .display-question > *:first-of-type {
+.add-question-container .display-question h4 {
     margin-top: 0;
+}
+
+.add-question-container .display-question small {
+    font-size: 12px;
 }
