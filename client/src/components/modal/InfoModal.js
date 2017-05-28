@@ -14,10 +14,6 @@ class InfoModal extends Component {
                                 <h4 className="modal-title">Game informations</h4>
                             </div>
                             <div className="modal-body">
-                                <h3 className="text-center">Welcome to JoyJS</h3>
-                                <p>This is a Trivia-like JavaScript based game. You can answer random JS questions and receive points based on your answer.</p>
-                                <p>You can also add your own questions to the game which will be reviewed by an admin. If the question passes the reviewing process, it will be added to the game.</p>
-                                <hr />
                                 <h4>Available slash commands:</h4>
                                 <div className="list-group">
                                     <div className="list-group-item">
@@ -34,7 +30,7 @@ class InfoModal extends Component {
                     </div>
                 </div>
 
-                <button type="button" data-toggle="modal" data-target="#infoModal" className="btn btn-primary btn-sm btn-block">Game info</button>
+                <button type="button" data-toggle="modal" data-target="#infoModal" className="btn btn-primary btn-sm btn-block">Slash commands</button>
             </div>
         );
     }

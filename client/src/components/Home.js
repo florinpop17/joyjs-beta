@@ -124,6 +124,12 @@ class Home extends Component {
 							{ errors.map((message, idx) => (<Alert type="warning" message={message} key={idx}/>)) }
 						</div>
 					) : '' }
+					<div className="col-sm-12">
+						<h3 className="text-center">Welcome to JoyJS</h3>
+						<p>This is a Trivia-like JavaScript based game. You can answer random JS questions and receive points based on your answer.</p>
+						<p>You can also add your own questions to the game which will be reviewed by an admin. If the question passes the reviewing process, it will be added to the game.</p>
+						<h5>Have fun!</h5>
+					</div>
 					<div className="col-sm-4 col-sm-offset-2">
 						<form onSubmit={this.handleLogin} className="form">
 							<h3>Login form</h3>
