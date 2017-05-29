@@ -7,4 +7,4 @@ You can also add your own questions to the game which will be reviewed by an adm
 If the question passes the reviewing process, it will be added to the game.
 
 # LIVE
-[here](www.florin-pop.me)
+[here](http://www.florin-pop.me)
