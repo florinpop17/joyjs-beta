@@ -29,13 +29,19 @@ module.exports = (io) => {
 
     // the game loop
     let game = () => {
+        let text = '';
+        let author = '';
 
         console.log('game...');
 
         currentQuestion = getRandomQuestion();
         answeredCorrectly = false;
 
-        let { text, author } = currentQuestion;
+        // { text, author } = currentQuestion;
+        if (currentQuestion) {
+            text = currentQuestion.text;
+            author = currentQuestion.author;
+        }
 
         // create question type message
         let questionMessage = {
